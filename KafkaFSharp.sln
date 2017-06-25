@@ -5,6 +5,11 @@ Project("{f2a71f9b-5d33-465a-a702-920d77279786}") = "Producer", "Producer\Produc
 EndProject
 Project("{f2a71f9b-5d33-465a-a702-920d77279786}") = "Consumer", "Consumer\Consumer.fsproj", "{4A83FC7E-AC51-438B-90EB-956B9FCAB149}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{7D1EF957-C89C-4637-8AD3-8488BDF9A605}"
+	ProjectSection(SolutionItems) = preProject
+		docker-compose.yml = docker-compose.yml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
