@@ -2,8 +2,14 @@ version: '3'
 services:
     consumer:
         build: ./Consumer
+        container_name: kfs-consumer
+        links: 
+            - kafka
     producer:
         build: ./Producer
+        container_name: kfs-producer
+        links: 
+            - kafka
     zookeeper:
         image: wurstmeister/zookeeper
         container_name: kfs-zookeeper
@@ -16,7 +22,7 @@ services:
         links:
             - zookeeper
         environment:
-            KAFKA_ADVERTISED_HOST_NAME: localhost
+            KAFKA_ADVERTISED_HOST_NAME: kafka
             KAFKA_ADVERTISED_PORT: 9092
             KAFKA_CREATE_TOPICS: "download-completed:1:1"
             KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181

@@ -1,14 +1,22 @@
 ﻿open System
+open Kafka
 
 type ConsumerSettings = {
     KafkaUrl : string
     Topic : string
+    ConsumeTimeout : TimeSpan
+}
+
+type DownloadCompleted = {
+    DocumentUri : string
+    Timestamp : DateTime
 }
 
 let rec loop action =
     async {
         action()
-        do! Async.Sleep 5000
+
+        do! Async.Sleep 1000
 
         return! loop action 
     }
@@ -16,13 +24,16 @@ let rec loop action =
 [<EntryPoint>]
 let main argv = 
     let settings = {
-        KafkaUrl = "localhost:9092"
-        Topic = "download-completed-v1"
+        KafkaUrl = "kafka:9092"
+        Topic = "download-completed"
+        ConsumeTimeout = TimeSpan.FromSeconds(3.)
     }
 
-    fun () -> printfn "[Consumer]: received a message from Kafka at %A" DateTime.Now
+    let handleMessage m =
+        printfn "[Consumer]: received a message from Kafka at %A, message is { DocumentUri : %s; Timestamp : %A }" DateTime.Now m.DocumentUri m.Timestamp
+    
+    consume settings.KafkaUrl settings.Topic settings.ConsumeTimeout handleMessage
     |> loop
     |> Async.RunSynchronously
-
 
     0

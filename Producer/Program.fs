@@ -1,9 +1,15 @@
 ﻿open System
+open Kafka
 
 type ProducerSettings = {
-    KafkaUrl : string
+    Broker : string
     Topic : string
     Timeout : int
+}
+
+type DownloadCompleted = {
+    DocumentUri : string
+    Timestamp : DateTime
 }
 
 let rec loop timeout action =
@@ -18,12 +24,21 @@ let rec loop timeout action =
 [<EntryPoint>]
 let main argv = 
     let settings = {
-        KafkaUrl = "localhost:9092"
-        Topic = "download-completed-v1"
+        Broker = "kafka:9092"
+        Topic = "download-completed"
         Timeout = 5000
     }
 
-    fun () -> printfn "[Producer]: Sending a message to Kafka at %A" DateTime.Now
+    let publishMessage () =
+        printfn "[Producer]: Sending a message to Kafka at %A" DateTime.Now
+
+        { 
+            DocumentUri = Guid.NewGuid() |> sprintf "http://mystorage.com/%A"
+            Timestamp = DateTime.UtcNow
+        } 
+        |> publish settings.Broker settings.Topic |> ignore
+
+    publishMessage
     |> loop settings.Timeout
     |> Async.RunSynchronously
     
