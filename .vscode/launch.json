@@ -1,0 +1,22 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Producer: Attach to Docker",
+            "type": "coreclr",
+            "request": "attach",
+            "processId": "${command:pickRemoteProcess}",
+            "pipeTransport": {
+                "pipeProgram": "bash",
+                "pipeArgs": [ "-c", "docker exec -i kfs-producer ${debuggerCommand}" ],
+                "debuggerPath": "/root/vsdbg/vsdbg",
+                "pipeCwd": "${workspaceRoot}/Producer",
+                "quoteArgs": true
+            },
+            "sourceFileMap": {
+                "${workspaceRoot}/Producer": "${workspaceRoot}/Producer"
+            },
+            "justMyCode": true
+        }
+    ]
+}
