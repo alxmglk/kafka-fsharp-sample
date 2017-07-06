@@ -1,11 +1,6 @@
 ﻿open System
 open Kafka
-
-type ProducerSettings = {
-    Broker : string
-    Topic : string
-    Timeout : int
-}
+open Settings
 
 type DownloadCompleted = {
     DocumentUri : string
@@ -23,11 +18,7 @@ let rec loop timeout action =
 
 [<EntryPoint>]
 let main argv = 
-    let settings = {
-        Broker = "kafka:9092"
-        Topic = "download-completed"
-        Timeout = 5000
-    }
+    let settings = getSettingsItem()
 
     let publishMessage () =
         printfn "[Producer]: Sending a message to Kafka at %A" DateTime.Now

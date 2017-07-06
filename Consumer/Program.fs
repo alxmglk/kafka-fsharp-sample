@@ -1,11 +1,6 @@
 ﻿open System
 open Kafka
-
-type ConsumerSettings = {
-    KafkaUrl : string
-    Topic : string
-    ConsumeTimeout : TimeSpan
-}
+open Settings
 
 type DownloadCompleted = {
     DocumentUri : string
@@ -23,11 +18,7 @@ let rec loop action =
 
 [<EntryPoint>]
 let main argv = 
-    let settings = {
-        KafkaUrl = "kafka:9092"
-        Topic = "download-completed"
-        ConsumeTimeout = TimeSpan.FromSeconds(3.)
-    }
+    let settings = getSettingsItem()
 
     let handleMessage m =
         printfn "[Consumer]: received a message from Kafka at %A, message is { DocumentUri : %s; Timestamp : %A }" DateTime.Now m.DocumentUri m.Timestamp

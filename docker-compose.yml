@@ -1,15 +1,15 @@
 version: '3'
 services:
-    consumer:
-        build: ./Consumer
-        container_name: kfs-consumer
-        links: 
-            - kafka
-    producer:
-        build: ./Producer
-        container_name: kfs-producer
-        links: 
-            - kafka
+    consul:
+        image: consul
+        container_name: kfs-consul
+        ports:
+            - 8500:8500
+        environment:
+            CONSUL_LOCAL_CONFIG: '{"bootstrap": true, "server": true, "ui": true}'
+        command: agent -server -bind 127.0.0.1 -client 0.0.0.0
+        volumes:
+            - /Users/Shared/consul/data:/consul/data
     zookeeper:
         image: wurstmeister/zookeeper
         container_name: kfs-zookeeper
@@ -26,3 +26,15 @@ services:
             KAFKA_ADVERTISED_PORT: 9092
             KAFKA_CREATE_TOPICS: "download-completed:1:1"
             KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+    consumer:
+        build: ./Consumer
+        container_name: kfs-consumer
+        links: 
+            - kafka
+            - consul
+    producer:
+        build: ./Producer
+        container_name: kfs-producer
+        links: 
+            - kafka
+            - consul
